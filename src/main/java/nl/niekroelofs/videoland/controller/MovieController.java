@@ -40,9 +40,21 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/movies/{id}")
+    /*@GetMapping("/movies/{id}")
     public ResponseEntity<Movie> getMovieById(@PathVariable("id") long id) {
         Optional<Movie> movieData = movieRepository.findById(id);
+        //Optional is an container object which may or may not contain a non-null value
+        //Check on Optional with isPresent() to see if it's filled
+        if (movieData.isPresent()) {
+            return new ResponseEntity<>(movieData.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }*/
+
+    @GetMapping("/movies/{title}")
+    public ResponseEntity<Movie> getMovieByTitle(@PathVariable("title") String title) {
+        Optional<Movie> movieData = movieRepository.findMovieByTitle(title);
         //Optional is an container object which may or may not contain a non-null value
         //Check on Optional with isPresent() to see if it's filled
         if (movieData.isPresent()) {

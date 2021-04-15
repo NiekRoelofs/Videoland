@@ -33,7 +33,7 @@ public class MovieController {
             if (movies.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-
+            //ResponseEntity represents the whole HTTP response, so status, headers and body
             return new ResponseEntity<>(movies, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,7 +43,8 @@ public class MovieController {
     @GetMapping("/movies/{id}")
     public ResponseEntity<Movie> getMovieById(@PathVariable("id") long id) {
         Optional<Movie> movieData = movieRepository.findById(id);
-
+        //Optional is an container object which may or may not contain a non-null value
+        //Check on Optional with isPresent() to see if it's filled
         if (movieData.isPresent()) {
             return new ResponseEntity<>(movieData.get(), HttpStatus.OK);
         } else {

@@ -1,4 +1,6 @@
-package nl.niekroelofs.videoland.model;
+package nl.niekroelofs.videoland.models;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
 
@@ -8,22 +10,23 @@ public class Movie {
 
     @Id //indicates primary key
     @GeneratedValue(strategy = GenerationType.AUTO) //auto increment field
-    private long id;
+    private Long id;
 
     @Column(name = "title") //column in database
     private String title;
 
     @Column(name = "genre")
-    private String genre;
+    @ManyToOne
+    @JsonBackReference
+    private Genre genre;
 
     @Column(name = "published")
     private boolean published;
 
     public Movie() {
-
     }
 
-    public Movie(String title, String genre, boolean published) {
+    public Movie(String title, Genre genre, boolean published) {
         this.title = title;
         this.genre = genre;
         this.published = published;
@@ -41,11 +44,11 @@ public class Movie {
         this.title = title;
     }
 
-    public String getGenre() {
+    public Genre getGenre() {
         return genre;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(Genre genre) {
         this.genre = genre;
     }
 

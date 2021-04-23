@@ -1,7 +1,6 @@
 package nl.niekroelofs.videoland.controllers;
 
 import nl.niekroelofs.videoland.models.Movie;
-import nl.niekroelofs.videoland.repository.MovieRepository;
 import nl.niekroelofs.videoland.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +33,7 @@ public class MovieController {
             if (movies.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            //ResponseEntity represents the whole HTTP response, so status, headers and body
+            //ResponseEntity represents the whole HTTP response, so status, headers and body(JSON)
             return new ResponseEntity<>(movies, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

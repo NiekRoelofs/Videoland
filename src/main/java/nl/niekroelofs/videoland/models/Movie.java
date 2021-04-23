@@ -1,11 +1,14 @@
 package nl.niekroelofs.videoland.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 
 @Entity //class is persistent Java class
 @Table(name = "movies") //table for database
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Movie {
 
     @Id //indicates primary key
@@ -15,9 +18,7 @@ public class Movie {
     @Column(name = "title") //column in database
     private String title;
 
-    @Column(name = "genre")
     @ManyToOne
-    @JsonBackReference
     private Genre genre;
 
     @Column(name = "published")
@@ -32,7 +33,7 @@ public class Movie {
         this.published = published;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -62,6 +63,6 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie [id=" + id + ", title=" + title + ", genre=" + genre + ", published=" + published + "]";
+        return "Movie [id=" + id + ", title=" + title + ", genre=" + genre.getName() + ", published=" + published + "]";
     }
 }

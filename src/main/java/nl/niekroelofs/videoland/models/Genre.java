@@ -1,6 +1,6 @@
 package nl.niekroelofs.videoland.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -8,7 +8,11 @@ import java.util.Set;
 
 @Entity
 @Table(name = "genres")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Genre {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -17,7 +21,7 @@ public class Genre {
     private String name;
 
     @OneToMany(mappedBy = "genre")
-    @JsonManagedReference
+    @JsonIgnore //use this instead of jsonmanagedreference so PUT call works
     private Set<Movie> movies = new HashSet<>();
 
     public Genre() {
@@ -28,7 +32,7 @@ public class Genre {
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

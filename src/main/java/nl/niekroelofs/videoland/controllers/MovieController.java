@@ -75,7 +75,7 @@ public class MovieController {
     }
 
     @PutMapping("/movies/{id}")
-    public ResponseEntity<Movie> updateMovie(@PathVariable("id") long id, @RequestBody Movie movie) {
+    public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id, @RequestBody Movie movie) {
         Optional<Movie> movieData = movieService.getMovieById(id);
 
         if (movieData.isPresent()) {
@@ -90,7 +90,7 @@ public class MovieController {
     }
 
     @DeleteMapping("/movies/{id}")
-    public ResponseEntity<HttpStatus> deleteMovie(@PathVariable("id") long id) {
+    public ResponseEntity<HttpStatus> deleteMovie(@PathVariable("id") Long id) {
         try {
             movieService.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

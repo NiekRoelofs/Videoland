@@ -2,9 +2,14 @@ package nl.niekroelofs.videoland.controllers;
 
 import nl.niekroelofs.videoland.models.Movie;
 import nl.niekroelofs.videoland.services.MovieService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -13,14 +18,23 @@ import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping("/api")
 public class MovieController {
 
     @Autowired
     private MovieService movieService;
 
+    Logger logger = LoggerFactory.getLogger(MovieController.class);
+
     @GetMapping("/movies")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Movie>> getAllMovies(@RequestParam(required = false) String title) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); //get logged user information
+
+        String currentPrincipalName = auth.getName();
+
+        logger.info(currentPrincipalName + " just requested all movies"); //log
+
         try {
             List<Movie> movies = new ArrayList<Movie>();
 
@@ -53,6 +67,7 @@ public class MovieController {
     }*/
 
     @GetMapping("/movies/{title}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Movie> getMovieByTitle(@PathVariable("title") String title) {
         Optional<Movie> movieData = movieService.getMovieByTitle(title);
         //Optional is an container object which may or may not contain a non-null value
@@ -65,6 +80,7 @@ public class MovieController {
     }
 
     @PostMapping("/movies")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Movie> createMovie(@RequestBody Movie movie) {
         try {
             Movie _movie = movieService.addMovie(new Movie(movie.getTitle(), movie.getGenre(), false));
@@ -75,6 +91,7 @@ public class MovieController {
     }
 
     @PutMapping("/movies/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Movie> updateMovie(@PathVariable("id") Long id, @RequestBody Movie movie) {
         Optional<Movie> movieData = movieService.getMovieById(id);
 
@@ -90,6 +107,7 @@ public class MovieController {
     }
 
     @DeleteMapping("/movies/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteMovie(@PathVariable("id") Long id) {
         try {
             movieService.deleteById(id);
@@ -100,6 +118,7 @@ public class MovieController {
     }
 
     @GetMapping("movies/published")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Movie>> findByPublished() {
         try {
             List<Movie> movies = movieService.getMovieByPublished(true);

@@ -17,19 +17,19 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        try {
-            String jwt = jwtTokenProvider.resolveToken(request);
 
-            if(jwt != null && jwtTokenProvider.validateToken(jwt)) { //check if token is valid
+        String jwt = jwtTokenProvider.resolveToken(request);
+
+        try {
+            if (jwt != null && jwtTokenProvider.validateToken(jwt)) { //check if token is valid
                 Authentication auth = jwtTokenProvider.getAuthentication(jwt); //retrieve user
                 SecurityContextHolder.getContext().setAuthentication(auth); //apply user to security context of request
-
             }
         } catch (ResponseStatusException e) {
             SecurityContextHolder.clearContext();   // if token is invalid, clear security context

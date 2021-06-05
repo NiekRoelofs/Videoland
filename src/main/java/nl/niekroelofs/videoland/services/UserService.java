@@ -33,17 +33,18 @@ public class UserService {
     public String login(String username, String password) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return jwtTokenProvider.createToken(username, userRepository.findByUsername(username).getRoles());
+            User user = userRepository.findByUsername(username);
+            return jwtTokenProvider.createToken(username, user.getRoles());
         } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Invalid username/password");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Login failed");
         }
     }
 
-    public String add(User user) {
+    public User add(User user) {
         if (userRepository.findByUsername(user.getUsername()) == null) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-            return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
+            return userRepository.save(user);
+            //return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
         } else {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username is already in use");
         }
